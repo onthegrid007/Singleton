@@ -8,7 +8,7 @@ SingletonContainerMap: Multi-static mapped class instantiations
 Both are acheived through the use of class polymorphism, template specalization (partial and full), and hierarchical inheritance.
 
 # Usage
-Basic Class Examples:
+Basic Classes:
 
 foo.h
 ```
