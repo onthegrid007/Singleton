@@ -41,6 +41,7 @@ Bar::printHW() { std::cout << "Hello World! - From Bar" << std::endl; }
 ```
 
 Singleton-Based Classes:
+
 foo.h
 ```
 #pragma once
