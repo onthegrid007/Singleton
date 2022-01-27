@@ -2,6 +2,7 @@
 Singleton &amp; SingletonContainerMap
 
 Singleton: Single static class instantiation
+
 SingletonContainerMap: Multi-static mapped class instantiations
 
 Both are acheived through the use of class polymorphism, template specalization (partial and full), and hierarchical inheritance.
