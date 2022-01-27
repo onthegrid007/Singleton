@@ -21,6 +21,7 @@ class Foo {
 foo.cpp
 ```
 #include "foo.h"
+#include <iostream>
 Foo::printHW() { std::cout << "Hello World! - From Foo" << std::endl; }
 ```
 
@@ -35,6 +36,7 @@ class Bar {
 bar.cpp
 ```
 #include "bar.h"
+#include <iostream>
 Bar::printHW() { std::cout << "Hello World! - From Bar" << std::endl; }
 ```
 
