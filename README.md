@@ -47,7 +47,13 @@ foo.h
 #pragma once
 #include "singleton.hpp"
 class Foo : public Singleton<Foo> {
+    public:
     void printHW();
+
+    private:
+    // ALL constructor of child classes must be expicitly declared private
+    // There is also an explicit deletion of the template child's constructor, since it can not be deduced untill the full template specalization. It forces the user to manualy define one.
+    Foo();
 }
 ```
 
@@ -70,7 +76,8 @@ class Bar : public SingletonContainerMap<Bar> {
     // REQUIRED to be private
     _SCM_CHILD_DECLORATIONS(Bar)
 
-    // Constructor of child class type must be expicitly declared, there is an explicit deletion of the template child's constructor due to the container map needing a default constructor. Since that can not be given yet due to partial template specalization, it is REQUIRES the user to manualy define one.
+    // ALL constructor of child classes must be expicitly declared private
+    // There is also an explicit deletion of the template child's constructor, since it can not be deduced untill the full template specalization. It forces the user to manualy define one.
     Bar();
 }
 ```
