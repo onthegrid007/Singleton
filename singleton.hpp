@@ -12,4 +12,7 @@ class Singleton : public std::NonMovable, public std::NonCopyable {
     private:
     static T Instance;
 };
+
+#define _SINGLETON_CHILD_DEFINITIONS(T) typedef T::Singleton<T> S; inline T S::Instance;
+
 #endif

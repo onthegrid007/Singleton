@@ -18,6 +18,7 @@ class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
     static ContainerType ContainerMap;
 
     private:
+    T() = default;
     friend typename ContainerType::mapped_type;
     static bool exists(const std::string& key) { return (ContainerMap.find(key) != ContainerMap.end()); }
 
@@ -61,8 +62,8 @@ class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
         DeleteInstanceByInstance(&this);
     }
 
-    // Could use some work...
-    template<typename getType, typename rtnType, typename... Args>
+    // Sadly no one-line means of deducing get/del Type, must think of another way...
+    /*
     static rtnType& Get(const getType _getObj, Args&& ... args) {
         return (typeid(std::basic_string<char>) == typeid(getType)) ? GetInstanceByKey(_getObj, args...) : GetKeyByInstance(_getObj);
         // return (typeid(T) == typeid(getType)) ? GetKeyByInstance(_getObj) : GetInstanceByKey(_getObj);
@@ -73,9 +74,10 @@ class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
     static const void Del(delType _delObj) {
         return (typeid(std::basic_string<char>) == typeid(delType)) ? DeleteInstanceByKey(_delObj) : DeleteInstanceByInstance(_delObj);
     }
+    */
 };
 
 #define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap;
-#define _SCM_CHILD_DEFINITIONS(T) typedef T::SingletonContainerMap<T> SCM; template<> SCM::ContainerType SCM::ContainerMap = SCM::ContainerType();
+#define _SCM_CHILD_DEFINITIONS(T) typedef T::SingletonContainerMap<T> SCM; template<> inline SCM::ContainerType SCM::ContainerMap = SCM::ContainerType();
 
 #endif

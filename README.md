@@ -60,6 +60,7 @@ class Foo : public Singleton<Foo> {
 foo.cpp
 ```
 #include "foo.h"
+_SINGLETON_CHILD_DEFINITIONS(Foo)
 #include <iostream>
 void Foo::printHW() { std::cout << "Hello World! - From Foo" << std::endl; }
 ```
