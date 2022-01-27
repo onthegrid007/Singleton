@@ -57,6 +57,10 @@ class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
         return DeleteInstanceByKey(GetKeyByInstance(instance));
     }
 
+    const void DeleteInstance() {
+        DeleteInstanceByInstance(&this);
+    }
+
     // Could use some work...
     template<typename getType, typename rtnType, typename... Args>
     static rtnType& Get(const getType _getObj, Args&& ... args) {
