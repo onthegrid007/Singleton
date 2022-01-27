@@ -22,7 +22,7 @@ foo.cpp
 ```
 #include "foo.h"
 #include <iostream>
-Foo::printHW() { std::cout << "Hello World! - From Foo" << std::endl; }
+void Foo::printHW() { std::cout << "Hello World! - From Foo" << std::endl; }
 ```
 
 bar.h
@@ -37,7 +37,7 @@ bar.cpp
 ```
 #include "bar.h"
 #include <iostream>
-Bar::printHW() { std::cout << "Hello World! - From Bar" << std::endl; }
+void Bar::printHW() { std::cout << "Hello World! - From Bar" << std::endl; }
 ```
 
 Singleton-Based Classes:
@@ -61,7 +61,7 @@ foo.cpp
 ```
 #include "foo.h"
 #include <iostream>
-Foo::printHW() { std::cout << "Hello World! - From Foo" << std::endl; }
+void Foo::printHW() { std::cout << "Hello World! - From Foo" << std::endl; }
 ```
 
 bar.h
@@ -88,7 +88,7 @@ bar.cpp
 _SCM_CHILD_DEFINITIONS(Bar)
 #include <iostream>
 Bar::Bar() { }
-Bar::printHW() { std::cout << "Hello World! - From Bar" << std::endl; }
+void Bar::printHW() { std::cout << "Hello World! - From Bar" << std::endl; }
 ```
 
 # Example
