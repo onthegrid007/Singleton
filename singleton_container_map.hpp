@@ -12,20 +12,19 @@ template<typename T, template<typename...> typename _MapType = std::unordered_ma
 class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
     public:
     typedef _MapType<std::string, T*> ContainerType;
-    typedef SingletonContainerMap<T> SCMType;
-    // template<typename _T = T>
-    // using SMC = SingletonContainerMap<_T>;
     static ContainerType ContainerMap;
 
     private:
-    T() = default;
+    std::string m_key;
     friend typename ContainerType::mapped_type;
     static bool exists(const std::string& key) { return (ContainerMap.find(key) != ContainerMap.end()); }
 
     public:
     template<typename... Args>
     static T& CreateNewInstance(const std::string key, Args ... args) {
-        return *(ContainerMap[key] = std::move(new T(args...)));
+        auto& rtn = *(ContainerMap[key] = std::move(new T(args...)));
+        if(rtn.m_key != key) rtn.m_key = key;
+        return rtn;
     }
     //template<typename... Args>
     //static T& CreateNewInstance(const std::string key, Args&& ... args) {
@@ -50,8 +49,12 @@ class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
         }
     }
     static const std::string GetKeyByInstance(const T& instance) {
+        return instance.m_key;
+        // Old way
+        /*
         for(auto& pair = ContainerMap.begin(); pair != ContainerMap.end(); pair++)
             if(pair[1] == &instance) { return pair[0]; }
+        */
     }
 
     static const void DeleteInstanceByInstance(const T& instance) {
