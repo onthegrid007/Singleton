@@ -9,7 +9,7 @@
 #include <assert.h>
 
 template<typename T, template<typename...> typename _MapType = std::unordered_map>
-class SingletonContainerMap : public std::NonMovable, public std::NonCopyable {
+class SingletonContainerMap : public NonMovable, public NonCopyable {
     public:
     typedef _MapType<std::string, T*> ContainerType;
     static ContainerType ContainerMap;

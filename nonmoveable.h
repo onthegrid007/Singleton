@@ -1,6 +1,5 @@
 #ifndef NONMOVEABLE_H_
 #define NONMOVEABLE_H_
-namespace std {
   class NonMovable {
     public:
     NonMovable(NonMovable &&) = delete;
@@ -9,5 +8,4 @@ namespace std {
     protected:
     NonMovable() = default;
   };
-};
 #endif

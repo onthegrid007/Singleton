@@ -5,7 +5,7 @@
 #include "nonmoveable.h"
 
 template<typename T>
-class Singleton : public std::NonMovable, public std::NonCopyable {
+class Singleton : public NonMovable, public NonCopyable {
     public:
     static T& GetInstance() { return Instance; }
 
