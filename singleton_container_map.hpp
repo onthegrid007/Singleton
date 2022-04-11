@@ -13,6 +13,8 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     public:
     typedef _MapType<std::string, T*> ContainerType;
     static ContainerType ContainerMap;
+    template<typename... Args>
+    SingletonContainerMap<T>(Args ... args) = delete;
 
     private:
     std::string m_key;
@@ -20,6 +22,7 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     static bool exists(const std::string& key) { return (ContainerMap.find(key) != ContainerMap.end()); }
 
     public:
+    SingletonContainerMap<T>() = default;
     template<typename... Args>
     static T& CreateNewInstance(const std::string key, Args ... args) {
         auto& rtn = *(ContainerMap[key] = std::move(new T(args...)));
