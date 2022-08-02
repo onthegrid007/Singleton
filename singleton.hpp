@@ -2,7 +2,6 @@
 *   BSD 3-Clause License, see file labled 'LICENSE' for the full License.
 *   Copyright (c) 2022, Peter Ferranti
 *   All rights reserved.
-*   Other Contributers:
 */
 
 #ifndef SINGLETON_HPP_
@@ -15,12 +14,12 @@ template<typename T>
 class Singleton : public NonMovable, public NonCopyable {
     public:
     static T& GetInstance() { return Instance; }
-    template<typename... Args>
-    Singleton<T>(Args ... args) = delete;
+    // template<typename... Args>
+    // Singleton<T>(Args ... args) = delete;
 
     private:
     static T Instance;
-    Singleton<T>() = 0;
+    // Singleton<T>() = 0;
 };
 
 #define _SINGLETON_CHILD_DECLORATIONS(T) friend class Singleton;

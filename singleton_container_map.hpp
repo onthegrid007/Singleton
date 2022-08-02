@@ -2,7 +2,6 @@
 *   BSD 3-Clause License, see file labled 'LICENSE' for the full License.
 *   Copyright (c) 2022, Peter Ferranti
 *   All rights reserved.
-*   Other Contributers:
 */
 
 #ifndef SINGLETON_CONTAINER_MAP_HPP_
@@ -20,8 +19,8 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     public:
     typedef _MapType<std::string, T*> ContainerType;
     static ContainerType ContainerMap;
-    template<typename... Args>
-    SingletonContainerMap<T>(Args ... args) = delete;
+    // template<typename... Args>
+    // SingletonContainerMap<T>(Args ... args) = delete;
 
     private:
     std::string m_key;
@@ -29,7 +28,7 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     static bool exists(const std::string& key) { return (ContainerMap.find(key) != ContainerMap.end()); }
 
     public:
-    SingletonContainerMap<T>() = default;
+    // SingletonContainerMap<T>() = default;
     template<typename... Args>
     static T& CreateNewInstance(const std::string key, Args ... args) {
         auto& rtn = *(ContainerMap[key] = std::move(new T(args...)));
