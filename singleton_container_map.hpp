@@ -8,60 +8,91 @@
 #define SINGLETON_CONTAINER_MAP_HPP_
 #include "noncopyable.h"
 #include "nonmoveable.h"
-
+#include <shared_mutex>
 #include <string>
 #include <unordered_map>
-#include <tuple>
-#include <assert.h>
 
-template<typename T, template<typename...> typename _MapType = std::unordered_map>
+template<typename T, template<typename...> typename MT = std::unordered_map>
 class SingletonContainerMap : public NonMovable, public NonCopyable {
     public:
-    typedef _MapType<std::string, T*> ContainerType;
-    static ContainerType ContainerMap;
-    // template<typename... Args>
-    // SingletonContainerMap<T>(Args ... args) = delete;
-
-    private:
+    typedef T Type;
+    typedef std::unique_ptr<T> TPType;
+    typedef std::shared_mutex MType;
+    typedef std::unique_ptr<MType> MPType;
+    typedef MT<std::string, TPType> CType;
+    typedef std::lock_guard<MType> LType;
+    
+    protected:
+    static CType CMap;
+    static MPType MTX;
+    // template<typename _T>
+    static MType& GetStaticMTX(MPType& mtx) {
+        if(!mtx.get()) mtx.reset(new MType());
+        // std::cout << (mtx.get()) << std::endl;
+        return *(mtx.get());
+    }
     std::string m_key;
-    friend typename ContainerType::mapped_type;
-    static bool exists(const std::string& key) { return (ContainerMap.find(key) != ContainerMap.end()); }
-
+    SingletonContainerMap() {}
+    // template<auto Args>
+    // static constexpr void s_print() {
+    //     #if !defined(__GNUC__) || defined(__clang__)
+    //         #error "break"
+    //         int static_print_is_implemented_only_for_gcc = 0;
+    //     #else
+    //         int unused = 0;
+    //     #endif
+    // };
+    
     public:
-    // SingletonContainerMap<T>() = default;
+    static bool Exists(const std::string& key, bool blocking = true) {
+        static CType CMap;
+        static MPType MTX;
+        if(blocking) {
+            LType lock(GetStaticMTX(MTX));
+            return ((CMap.find(key) != CMap.end()) && !CMap.empty());
+        } else {
+            return ((CMap.find(key) != CMap.end()) && !CMap.empty());
+        }
+    }
+    
     template<typename... Args>
     static T& CreateNewInstance(const std::string key, Args ... args) {
-        auto& rtn = *(ContainerMap[key] = std::move(new T(args...)));
+        static CType CMap;
+        static MPType MTX;
+        LType lock(GetStaticMTX(MTX));
+        constexpr bool CNIHasArgs = (bool)((size_t)(sizeof...(args)));
+        // s_print<tmp>();
+        T& rtn = Exists(key, false) ? *(CMap[key].get()) : *(CMap[key] = std::move(TPType(new T(args...))));
         if(rtn.m_key != key) rtn.m_key = key;
         return rtn;
     }
-    //template<typename... Args>
-    //static T& CreateNewInstance(const std::string key, Args&& ... args) {
-    //    return CreateNewInstance(key, args...);
-    //}
-
+    
     template<typename... Args>
     static T& GetInstanceByKey(const std::string key, Args ... args) {
-        if(exists(key)) {
-            return *(ContainerMap[key]);
+        static CType CMap;
+        static MPType MTX;
+        if(Exists(key)) { 
+            LType lock(GetStaticMTX(MTX));
+            return *(CMap[key].get());
         }
-        assert(false);
+        // LType lock(GetStaticMTX(MTX));
+        return CreateNewInstance(key, std::move(args)...);
     }
-    //template<typename... Args>
-    //static T& GetInstanceByKey(const std::string key, Args&& ... args) {
-    //    return GetInstanceByKey(key, args...);
-    //}
 
     static const void DeleteInstanceByKey(const std::string key) {
-        if(exists(key)) {
-            return ContainerMap.erase(key);
+        static CType ContainerMap;
+        static MPType MTX;
+        if(Exists(key)) {
+            LType lock(GetStaticMTX(MTX));
+            CMap.erase(key);
         }
     }
+    
     static const std::string GetKeyByInstance(const T& instance) {
         return instance.m_key;
         // Old way
         /*
-        for(auto& pair = ContainerMap.begin(); pair != ContainerMap.end(); pair++)
+        for(auto& pair = CMap.begin(); pair != CMap.end(); pair++)
             if(pair[1] == &instance) { return pair[0]; }
         */
     }
@@ -89,7 +120,8 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     */
 };
 
-#define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap;
-#define _SCM_CHILD_DEFINITIONS(T) typedef T::SingletonContainerMap<T> SCM; template<> inline SCM::ContainerType SCM::ContainerMap = SCM::ContainerType();
-
+#define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap; friend class SingletonContainerMap<T>; friend typename SingletonContainerMap<T>::MPType; friend typename std::default_delete<T>; //friend class std::__uniq_ptr_data<T, std::default_delete<T>>; friend typename std::__uniq_ptr_impl<T, std::default_delete<T>>::pointer; friend class std::remove_reference<T>;
+#define _SCM_CHILD_DEFINITIONS(T) typedef T::SingletonContainerMap<T> SCM; template<> inline SCM::CType SCM::CMap = SCM::CType(); template<> inline SCM::MPType SCM::MTX = std::make_unique<SCM::MType>();
+// #define _SCM_CHILD_DESTRUCTOR for(auto pair = SCM::CMap.begin(); pair != SCM::CMap.end(); pair++) DeleteInstanceByKey(((*pair).first));
+ 
 #endif
