@@ -33,15 +33,6 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     }
     std::string m_key;
     SingletonContainerMap() {}
-    // template<auto Args>
-    // static constexpr void s_print() {
-    //     #if !defined(__GNUC__) || defined(__clang__)
-    //         #error "break"
-    //         int static_print_is_implemented_only_for_gcc = 0;
-    //     #else
-    //         int unused = 0;
-    //     #endif
-    // };
     
     public:
     static bool Exists(const std::string& key, bool blocking = true) {
