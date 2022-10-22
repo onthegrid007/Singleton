@@ -13,16 +13,21 @@
 template<typename T>
 class Singleton : public NonMovable, public NonCopyable {
     public:
-    static T& GetInstance() { return Instance; }
-    // template<typename... Args>
-    // Singleton<T>(Args ... args) = delete;
+    typedef T Type;
+    static T& GetInstance() { return T::template Singleton<T>::Instance; }
+    const bool IsAvaliable() {
+        return !IsDestructed;
+    }
+    static void InstanceDestruction() {
+        bool IsDestructed = true;
+    }
 
     private:
     static T Instance;
-    // Singleton<T>() = 0;
+    static bool IsDestructed;
 };
 
 #define _SINGLETON_CHILD_DECLORATIONS(T) friend class Singleton;
-#define _SINGLETON_CHILD_DEFINITIONS(T) typedef T::Singleton<T> S; template<> inline T S::Instance;
+#define _SINGLETON_CHILD_DEFINITIONS(T) typedef T::template Singleton<T> S; template<> T S::Instance = T(); template<> bool S::IsDestructed = false;
 
 #endif
