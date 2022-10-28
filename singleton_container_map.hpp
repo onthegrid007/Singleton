@@ -21,10 +21,11 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     typedef MT<std::string, T*> CType;
     typedef std::lock_guard<MType> LType;
     typedef SingletonContainerMap<T> SCMType;
+    // typedef T::template SCMType SCM;
     
     protected:
-    static CType CMap;
-    static MType MTX;
+    inline static CType CMap;
+    inline static MType MTX;
     std::string m_key;
     SingletonContainerMap() {}
     
@@ -80,6 +81,6 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     }
 };
 #define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap; friend class SingletonContainerMap<T>;
-#define _SCM_CHILD_DEFINITIONS(T) typedef T::template SingletonContainerMap<T> SCM; template<> SCM::CType SCM::CMap = SCM::CType(); template<> SCM::MType SCM::MTX = SCM::MType();
+#define _SCM_CHILD_DEFINITIONS(T) template<> inline T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> inline T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
  
 #endif
