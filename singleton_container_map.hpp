@@ -13,6 +13,12 @@
 #include <unordered_map>
 #include <iostream>
 
+#if _GLIBCXX_USE_CXX11_ABI
+#  define SCMINLINE inline cxx11 __attribute__((abi_tag("cxx11")))
+#else
+#  define SCMINLINE inline 
+#endif
+
 template<typename T, template<typename...> typename MT = std::unordered_map>
 class SingletonContainerMap : public NonMovable, public NonCopyable {
     public:
@@ -24,8 +30,8 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     // typedef T::template SCMType SCM;
     
     protected:
-    inline static CType CMap;
-    inline static MType MTX;
+    SCMINLINE static CType CMap;
+    SCMINLINE static MType MTX;
     std::string m_key;
     SingletonContainerMap() {}
     
@@ -73,6 +79,7 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     }
 
     static const void DeleteInstanceByInstance(const T& instance) {
+        // I am aware of the violations, this is meerly still here for thinking
         return DeleteInstanceByKey(GetKeyByInstance(instance));
     }
 
@@ -81,6 +88,6 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     }
 };
 #define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap; friend class SingletonContainerMap<T>;
-#define _SCM_CHILD_DEFINITIONS(T) template<> inline T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> inline T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
+#define _SCM_CHILD_DEFINITIONS(T) template<> SCMINLINE T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> SCMINLINE T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
  
 #endif
