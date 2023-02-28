@@ -8,16 +8,11 @@
 #define SINGLETON_CONTAINER_MAP_HPP_
 #include "noncopyable.h"
 #include "nonmoveable.h"
+#include "inline_abi_macros.h"
 #include <shared_mutex>
 #include <string>
 #include <unordered_map>
 #include <iostream>
-
-#if _GLIBCXX_USE_CXX11_ABI
-#  define SCMINLINE inline cxx11 __attribute__((abi_tag("cxx11")))
-#else
-#  define SCMINLINE inline 
-#endif
 
 template<typename T, template<typename...> typename MT = std::unordered_map>
 class SingletonContainerMap : public NonMovable, public NonCopyable {
@@ -27,11 +22,10 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     typedef MT<std::string, T*> CType;
     typedef std::lock_guard<MType> LType;
     typedef SingletonContainerMap<T> SCMType;
-    // typedef T::template SCMType SCM;
     
     protected:
-    SCMINLINE static CType CMap;
-    SCMINLINE static MType MTX;
+    ABI_INLINE static CType CMap;
+    ABI_INLINE static MType MTX;
     std::string m_key;
     SingletonContainerMap() {}
     
@@ -47,12 +41,12 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     
     template<typename... Args>
     static T& CreateNewInstance(const std::string key, Args ... args) {
-        LType lock(T:: template SingletonContainerMap<T>::MTX);
+        LType lock(T::template SingletonContainerMap<T>::MTX);
         if(!Exists(key, false)) {
-            T::template SingletonContainerMap<T>::CMap[key] = std::move(new T(args...));
+            (T::template SingletonContainerMap<T>::CMap[key] = std::move(new T(args...)))->m_key = key;
         }
         T& rtn = *(T::template SingletonContainerMap<T>::CMap[key]);
-        if(rtn.m_key != key) rtn.m_key = key;
+        // if(rtn.m_key != key) rtn.m_key = key;
         return rtn;
     }
     
@@ -88,6 +82,6 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     }
 };
 #define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap; friend class SingletonContainerMap<T>;
-#define _SCM_CHILD_DEFINITIONS(T) template<> SCMINLINE T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> SCMINLINE T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
+#define _SCM_CHILD_DEFINITIONS(T) template<> ABI_INLINE T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> ABI_INLINE T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
  
 #endif
