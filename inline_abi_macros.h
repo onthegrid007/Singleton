@@ -1,6 +1,6 @@
 /*
 *   BSD 3-Clause License, see file labled 'LICENSE' for the full License.
-*   Copyright (c) 2022, Peter Ferranti
+*   Copyright (c) 2023, Peter Ferranti
 *   All rights reserved.
 */
 
@@ -10,10 +10,11 @@
 
 #if _GLIBCXX_USE_CXX11_ABI
 	#define ABI_INLINE inline cxx11 __attribute__((abi_tag("cxx11")))
+	#define ALWAYS_INLINE inline cxx11 __attribute__((abi_tag("cxx11"), always_inline))
 #else
-	#define ABI_INLINE inline 
+	#define ABI_INLINE inline
+	#define ALWAYS_INLINE inline __attribute__((always_inline))
 #endif
 
-#define ALWAYS_INLINE ABI_INLINE __attribute__((always_inline))
 
 #endif
