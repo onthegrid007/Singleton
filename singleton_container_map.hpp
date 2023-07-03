@@ -24,8 +24,8 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     typedef SingletonContainerMap<T> SCMType;
     
     protected:
-    ABI_INLINE static CType CMap;
-    ABI_INLINE static MType MTX;
+    inline static CType CMap;
+    inline static MType MTX;
     std::string m_key;
     SingletonContainerMap() {}
     
@@ -81,6 +81,6 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     }
 };
 #define _SCM_CHILD_DECLORATIONS(T) friend class SingletonContainerMap; friend class SingletonContainerMap<T>;
-#define _SCM_CHILD_DEFINITIONS(T) template<> ABI_INLINE T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> ABI_INLINE T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
+#define _SCM_CHILD_DEFINITIONS(T) template<> ALWAYS_INLINE T::template SingletonContainerMap<T>::CType T::template SingletonContainerMap<T>::CMap = T::template SingletonContainerMap<T>::CType(); template<> ALWAYS_INLINE T::template SingletonContainerMap<T>::MType T::template SingletonContainerMap<T>::MTX = T::template SingletonContainerMap<T>::MType();
  
 #endif
