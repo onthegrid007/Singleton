@@ -9,11 +9,11 @@
 #include <cxxabi.h>
 
 #if _GLIBCXX_USE_CXX11_ABI
-	#define ABI_INLINE inline cxx11 __attribute__((abi_tag("cxx11")))
-	#define ALWAYS_INLINE inline cxx11 __attribute__((abi_tag("cxx11"), always_inline))
+	#define ABI_INLINE inline __attribute__((abi_tag("cxx11")))
+	#define AINLINE inline __attribute__((abi_tag("cxx11"), always_inline))
 #else
 	#define ABI_INLINE inline
-	#define ALWAYS_INLINE inline __attribute__((always_inline))
+	#define AINLINE inline __attribute__((always_inline))
 #endif
 
 
