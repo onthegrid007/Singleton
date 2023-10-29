@@ -17,8 +17,6 @@
 template<typename T, template<typename...> typename MT = std::unordered_map>
 class SingletonContainerMap : public NonMovable, public NonCopyable {
     public:
-    // SingletonContainerMap() = delete;
-    // ~SingletonContainerMap() = delete;
     typedef T Type;
     typedef std::shared_timed_mutex MType;
     typedef MT<std::string, void*> CType;
@@ -26,7 +24,6 @@ class SingletonContainerMap : public NonMovable, public NonCopyable {
     typedef SingletonContainerMap<T> SCMType;
     
     protected:
-    // SingletonContainerMap() = 0;
     AINLINE static CType CMap;
     AINLINE static MType MTX;
     std::string m_key;
